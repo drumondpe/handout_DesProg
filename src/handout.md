@@ -27,8 +27,9 @@ Quando dividimos o número ao meio, a parte mais significativa está "perdendo" 
 Faça isso para os números `md 1234` e `md 5678` que já foram separados
 
 ::: Gabarito
-* X: `md (12 x 10^(4/2)) + 34 ` 
-* Y: `md (56 x 10^(4/2)) + 78 ` 
+
+* $X = (12 * 10^{4/2}) + 34$ 
+* $Y = (56 * 10^{4/2} ) + 78$ 
 
 Assim, somando os números, voltaríamos a ter `md 1234` e `md 5678`
   
@@ -37,7 +38,7 @@ Assim, somando os números, voltaríamos a ter `md 1234` e `md 5678`
 
 ??? Atividade 2: Dando nome aos números 
 
-Da multiplicação anterior, temos que:
+Da separação anterior, temos que:
 
 * `md a = 12`
 * `md b = 34`
@@ -49,91 +50,83 @@ n representa o número de dígitos do número
 Como ficam `md X` e `md Y` quando substituímos seus números pelas respectivas letras?
 
 ::: Gabarito
-* `md X = ((a x 10^(n/2)) + b`  
-* `md Y = ((c x 10^(n/2)) + d`  
-
+* $X = (a * 10^{n/2}) + b$  
+* $Y = (c * 10^{n/2}) + d$  
 :::
 ???
 
 ??? Atividade 3: Multiplicação dos dois números 
 
-Faça faça a multiplicação `md X x Y`, aplicando a distributiva
+Faça a multiplicação $X * Y$, aplicando a distributiva
 
 ::: Gabarito
-
-* `md XY = ((a x 10^(n/2)) + b) x ((c x 10^(n/2)) + d`
-* `md XY = ac x 10^n + ((a x d) + (b x c)) x 10^(n/2) + bd`
-
+* $XY = ((a * 10^{n/2}) + b) * ((c * 10^{n/2}) + d)$
+* $XY = ac * 10^n + ((ad) + (bc)) * 10^{n/2} + bd$
 :::
 ???
 
-Com essa fórmula em mãos, podemos aplicar uma identidade algébrica para possuirmos apenas 3 multiplicações diferentes, ao invés de 4.
+??? Atividade 4: Fórmula da Multiplicação Recursiva
+Com essa fórmula em mãos, podemos aplicar uma lógica para possuirmos apenas `md 3` multiplicações **diferentes**, ao invés de `md 4`.
 
-XY = ac x 10^n + ((a x d) + (b x c)) x 10^(n/2) + bd
+Vamos chamar nossa equação de `md I`:
 
-a identidade algébrica que podemos utilizar aqui é: 
-a + bc + d = (a+b)×(c+d) − bd − ac
+$I: XY = ac * 10^n + ((ad) + (bc)) * 10^{n/2} + bd$
 
-mas 
+E essa outra equação de `md II`:
 
-??? Exercício 1: Utilizando a fórmula da multiplicação recursiva
+$II: XY = ac * 10^n + ((a + b)(c + d) - bd - ac) * 10^{n/2} + bd$
 
-`md XY = (a x c) x 10^n + ((a x d) + (b x c)) x 10^(n/2) + b x d`
+Se expardirmos o produto $(a+b)(c+d)$ da segunda equação, teremos a seguinte expressão:
 
-Então, para substituir na fórmula, temos:
-`md a = 12; b = 34; c = 56; d = 78; n = 4`
+$(a+b)(c+d) = ac + ad + bc + bd$
 
-
-!!! Dica
-A fórmula do algoritmo de Karatsuba pode ser uma combinação de 5 passos para facilitar os cálculos:
-
-`md I`: a x c
-
-`md II`: b x d
-
-`md III`: (a+b) x (c+d)
-
-`md IV `: `md III - II - I` 
-
-`md V`: `md I`x10^n + `md IV`x10^n/2 + `md II`
-n
-
-
-(a x c)x10^n + ((a+b) x (c+d) - b x d - a x c)x10^n/2 + b x d
-
-!!!
+De que forma podemos fazer com que a segunda equação se torne a primeira?
 
 ::: Gabarito
-* Passo I: `md ac = 12 x 56 = 672` 
+Subtraindo $ac$ e $bd$ da expressão:
 
-* Passo II: `md bd = 34 x 78 = 2652`
+$(a+b)(c+d) − ac − bd = ad + bc$
 
-* Passo III : `md (a+b)(c+d) = (12 + 34) x (56 + 78) = 6164`
+Agora, substituindo isso de volta na fórmula I, obtemos a fórmula II. A ideia é evitar calcular $ad$ e $bc$ separadamente, pois isso requer duas multiplicações adicionais. Em vez disso, podemos calcular $(a+b) × (c+d) − ac − bd$ em uma única multiplicação e reduzir a complexidade computacional do algoritmo de Karatsuba.
 
-* Passo IV: `md 6164 - 2652 - 672 = 2840`
+{red}(**$XY = ac * 10^n + ((a + b)(c + d) - bd - ac) * 10^{n/2} + bd$**)
+:::
+???
 
-* Passo V: `md 6720000 + 2652 + 284000 = 7006652`
+??? Exercício 1: Utilizando a fórmula da multiplicação recursiva
+A partir da fórmula da multiplicação recursiva, resolva a multiplicação `md 1234` x `md 5678`
+
+::: Gabarito
+* Passo I: $ac = 12 * 56 = 672$ 
+
+* Passo II: $bd = 34 * 78 = 2.652$
+
+* Passo III : $(a+b)(c+d) = (12 + 34) * (56 + 78) = 6.164$
+
+* Passo IV: $6.164 - 2.652 - 672 = 2.840$
+
+* Passo V: $6.720.000 + 284.000 + 2.652 = 7.006.652$
 :::
 ???
 
 Agora vamos fazer outro exercício para fixar o conteúdo
 
-??? Exercício
+??? Exercício 2
 
-Faça a multiplicação dos números `md 234567` x `md 345678`. Lembre de usar a dica fornecida.
+Faça a multiplicação dos números `md 234567` x `md 345678`. Lembre de usar a fórmula da multiplicação recursiva.
 
 ::: Gabarito
 Temos que `md a = 234`, `md b = 567`, `md c = 345`, `md d = 678`, `md n = 6` 
 
-* Passo I: `md ac = 234 x 345 = 80.730`
+* Passo I: $ac = 234 * 345 = 80.730$
 
-* Passo II: `md bd = 567 x 678 = 384.426`
+* Passo II: $bd = 567 * 678 = 384.426$
 
-* Passo III: `md (a+b)(c+d) = (234 + 567) x (345 + 678) = 819.423`
+* Passo III: $(a+b)(c+d) = (234 + 567) * (345 + 678) = 819.423$
 
-* Passo IV: `md 819.423 - 384.426 - 80.730 = 354.267`
+* Passo IV: $819.423 - 384.426 - 80.730 = 354.267$
 
-* Passo V: `md 80.730 x 10^6 + 354.267 x 10^3 + 384.426` = `md 81.084.651.426`
+* Passo V: $80.730 * 10^6 + 354.267 * 10^3 + 384.426 = 81.084.651.426$
 :::
 ???
 
