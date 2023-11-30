@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <title>Algoritmo de Karatsuba</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400;1,700&family=Open+Sans+Condensed:ital,wght@0,300;1,300&family=Open+Sans:ital,wght@0,300;0,400;0,700;0,800;1,300;1,400;1,700;1,800&family=Oxygen+Mono&family=Josefin+Sans:ital,wght@0,200;0,600;1,200;1,600&display=swap">
+        <link rel="stylesheet" href="assets/css/reset.css">
+        <link rel="stylesheet" href="assets/css/highlight.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+        <link rel="stylesheet" href="assets/css/color.css">
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script async src="https://static.codepen.io/assets/embed/ei.js"></script>
+        <script src="assets/js/highlight.js"></script>
+        <script src="assets/js/script.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <a href="">abrir tudo</a>
+                <a href="">fechar tudo</a>
+            </header>
+            <main>
+
+<h1>Algoritmo de Karatsuba</h1>
+<h2>Qual é a complexidade de uma multiplicação?</h2>
+<p>Vamos começar com um exercício de memória.</p>
+<blockquote class="question">
+<p>Pergunta</p>
+<p>Pelo que apendemos em Desafios de Programação até o momento, qual a complexidade das operações aritméticas (soma, subtração, divisão e multiplicação)?</p>
+<details class="answer">
+<summary>Gabarito</summary>
+<p>Se você pensou em O(1), você está correto. Mas será que não podemos levar em consideração o contexto?</p>
+</details>
+</blockquote>
+<p>Para o contexto do handout, consideraremos o número de dígitos. Dessa forma, a única operação aritmética O(1) é aquela entre dois números de um algarismo só. Todas as outras operações terão complexidade O(n²), sendo n o número de dígitos do maior algarismo.</p>
+<p>Tendo isso em mente, vamos pensar em situações da computação em que usamos grandes multiplicações.</p>
+<blockquote class="question">
+<p>Pergunta</p>
+<p>Onde usamos multiplicações de números inteiros de grande magnitude na programação?</p>
+<details class="answer">
+<summary>Veja alguns exemplos.</summary>
+<p>Criptografia, processamento de sinais e processamento de grandes conjuntos de dados.</p>
+</details>
+</blockquote>
+<p>Conseguiria imaginar todos esses processos sendo executados em complexidade de tempo O(n²)?</p>
+<p>Assim, vale pensar em alternativas para o algoritmo de multiplicação tradicional em números de muitos algarismos: uma dessas, o <strong>Algoritmo de Karatsuba</strong>.</p>
+<h2>O algoritmo</h2>
+<p>O Algoritmo de Karatsuba é uma técnica eficiente de multiplicação, encontra aplicação significativa na área de computação, especialmente em operações que envolvem números grandes.</p>
+<p>A criptografia RSA, por exemplo, é um sistema amplamente utilizado para segurança de comunicações online e utiliza a multiplicação de números primos extremamente grandes. A aplicação do Algoritmo de Karatsuba, nesse caso, permite reduzir significativamente o número de operações de multiplicação, otimizando o desempenho do sistema.</p>
+<p>Suponha que precisamos multiplicar dois números grandes, como <code class="language-md">12345678901234567890</code> e  <code class="language-md">98765432109876543210</code>. O Algoritmo de Karatsuba divide esses números em partes menores, realiza multiplicações recursivas e, na etapa de combinação, emprega estratégias inteligentes para reduzir a quantidade de operações.</p>
+<h2>Exemplo e dedução</h2>
+<p>Para facilitar o seu entendimento, ilustraremos um exemplo com números menores para entender o mecanismo de maneira mais simples. Suponha que desejamos multiplicar os números <code class="language-md">1234</code> e <code class="language-md">5678</code>. O Algoritmo de Karatsuba divide cada número em duas partes aproximadamente iguais:</p>
+<ul>
+<li>Número 1: <code class="language-md">12</code> e <code class="language-md">34</code></li>
+<li>Número 2: <code class="language-md">56</code> e <code class="language-md">78</code></li>
+</ul>
+<blockquote class="question">
+<p>Atividade 1: Equilibrando os números</p>
+<p>Quando dividimos o número ao meio, a parte mais significativa está “perdendo” suas casas decimais (a casa de milhar e das centenas), se fizermos a soma <code class="language-md">12 + 34</code> não vamos chegar no número <code class="language-md">1234</code> então é necessário que desloquemos os números mais significativos para suas devidas casas.</p>
+<p>Faça isso para os números <code class="language-md">1234</code> e <code class="language-md">5678</code> que já foram separados</p>
+<details class="answer">
+<summary>Gabarito</summary>
+<ul>
+<li>\(X = (12 * 10^{4/2}) + 34\)</li>
+<li>\(Y = (56 * 10^{4/2} ) + 78\)</li>
+</ul>
+<p>Assim, somando os números, voltaríamos a ter <code class="language-md">1234</code> e <code class="language-md">5678</code></p>
+</details>
+</blockquote>
+<blockquote class="question">
+<p>Atividade 2: Dando nome aos números</p>
+<p>Da separação anterior, temos que:</p>
+<ul>
+<li><code class="language-md">a = 12</code></li>
+<li><code class="language-md">b = 34</code></li>
+<li><code class="language-md">c = 56</code></li>
+<li><code class="language-md">d = 78</code></li>
+<li><code class="language-md">n = 4</code>
+n representa o número de dígitos do número</li>
+</ul>
+<p>Como ficam <code class="language-md">X</code> e <code class="language-md">Y</code> quando substituímos seus números pelas respectivas letras?</p>
+<details class="answer">
+<summary>Gabarito</summary>
+<ul>
+<li>\(X = (a * 10^{n/2}) + b\)</li>
+<li>\(Y = (c * 10^{n/2}) + d\)</li>
+</ul>
+</details>
+</blockquote>
+<blockquote class="question">
+<p>Atividade 3: Multiplicação dos dois números</p>
+<p>Faça a multiplicação \(X * Y\), aplicando a distributiva</p>
+<details class="answer">
+<summary>Gabarito</summary>
+<ul>
+<li>\(XY = ((a * 10^{n/2}) + b) * ((c * 10^{n/2}) + d)\)</li>
+<li>\(XY = ac * 10^n + ((ad) + (bc)) * 10^{n/2} + bd\)</li>
+</ul>
+</details>
+</blockquote>
+<blockquote class="question">
+<p>Atividade 4: Fórmula da Multiplicação Recursiva</p>
+<p>Com essa fórmula em mãos, podemos aplicar uma lógica para possuirmos apenas <code class="language-md">3</code> multiplicações <strong>diferentes</strong>, ao invés de <code class="language-md">4</code>.</p>
+<p>Vamos chamar nossa equação de <code class="language-md">I</code>:</p>
+<p>\(I: XY = ac * 10^n + ((ad) + (bc)) * 10^{n/2} + bd\)</p>
+<p>E essa outra equação de <code class="language-md">II</code>:</p>
+<p>\(II: XY = ac * 10^n + ((a + b)(c + d) - bd - ac) * 10^{n/2} + bd\)</p>
+<p>Se expardirmos o produto \((a+b)(c+d)\) da segunda equação, teremos a seguinte expressão:</p>
+<p>\((a+b)(c+d) = ac + ad + bc + bd\)</p>
+<p>De que forma podemos fazer com que a segunda equação se torne a primeira?</p>
+<details class="answer">
+<summary>Gabarito</summary>
+<p>Subtraindo \(ac\) e \(bd\) da expressão:</p>
+<p>\((a+b)(c+d) − ac − bd = ad + bc\)</p>
+<p>Agora, substituindo isso de volta na fórmula I, obtemos a fórmula II. A ideia é evitar calcular \(ad\) e \(bc\) separadamente, pois isso requer duas multiplicações adicionais. Em vez disso, podemos calcular \((a+b) × (c+d) − ac − bd\) em uma única multiplicação e reduzir a complexidade computacional do algoritmo de Karatsuba.</p>
+<p><span class="md-colorify md-colorify--red"><strong>\(XY = ac * 10^n + ((a + b)(c + d) - bd - ac) * 10^{n/2} + bd\)</strong></span></p>
+</details>
+</blockquote>
+<blockquote class="question">
+<p>Exercício 1: Utilizando a fórmula da multiplicação recursiva</p>
+<p>A partir da fórmula da multiplicação recursiva, resolva a multiplicação <code class="language-md">1234</code> x <code class="language-md">5678</code></p>
+<details class="answer">
+<summary>Gabarito</summary>
+<ul>
+<li>
+<p>Passo I: \(ac = 12 * 56 = 672\)</p>
+</li>
+<li>
+<p>Passo II: \(bd = 34 * 78 = 2.652\)</p>
+</li>
+<li>
+<p>Passo III : \((a+b)(c+d) = (12 + 34) * (56 + 78) = 6.164\)</p>
+</li>
+<li>
+<p>Passo IV: \(6.164 - 2.652 - 672 = 2.840\)</p>
+</li>
+<li>
+<p>Passo V: \(6.720.000 + 284.000 + 2.652 = 7.006.652\)</p>
+</li>
+</ul>
+</details>
+</blockquote>
+<p>Agora vamos fazer outro exercício para fixar o conteúdo</p>
+<blockquote class="question">
+<p>Exercício 2</p>
+<p>Faça a multiplicação dos números <code class="language-md">234567</code> x <code class="language-md">345678</code>. Lembre de usar a fórmula da multiplicação recursiva.</p>
+<details class="answer">
+<summary>Gabarito</summary>
+<p>Temos que <code class="language-md">a = 234</code>, <code class="language-md">b = 567</code>, <code class="language-md">c = 345</code>, <code class="language-md">d = 678</code>, <code class="language-md">n = 6</code></p>
+<ul>
+<li>
+<p>Passo I: \(ac = 234 * 345 = 80.730\)</p>
+</li>
+<li>
+<p>Passo II: \(bd = 567 * 678 = 384.426\)</p>
+</li>
+<li>
+<p>Passo III: \((a+b)(c+d) = (234 + 567) * (345 + 678) = 819.423\)</p>
+</li>
+<li>
+<p>Passo IV: \(819.423 - 384.426 - 80.730 = 354.267\)</p>
+</li>
+<li>
+<p>Passo V: \(80.730 * 10^6 + 354.267 * 10^3 + 384.426 = 81.084.651.426\)</p>
+</li>
+</ul>
+</details>
+</blockquote>
+<h2>Complexidade do algoritmo</h2>
+<p>Vamos calcular juntos a complexidade do Algoritmo de Karatsuba!</p>
+<p>Como visto no tópico anterior, esse código realiza três chamadas recursivas, divisões, potências de 10 e combinações por soma e subtração.
+Sendo assim, usaremos a receita para cálculo da complexidade de funções recursivas, vista na <code class="language-md">Aula 8</code>:</p>
+<ol>
+<li>Escreva a recorrência;</li>
+<li>Construa a árvore;</li>
+<li>Calcule um limitante para a altura;</li>
+<li>calcule a “soma de vermelhos” (parte não-recursiva das expansões) de cada andar.</li>
+</ol>
+<blockquote class="question">
+<p>Exercício 1</p>
+<p>Escreva a recorrência do Algoritmo de Karatsuba.</p>
+<p><code class="language-md">Dica 1:</code> A recursão é chamada três vezes com n/2.</p>
+<p><code class="language-md">Dica 2:</code> Podemos usar a multiplicação tradicional quando o maior algarismo tiver menos de 2 dígitos.</p>
+<p><code class="language-md">Dica 3:</code> A soma tem complexidade O(n).</p>
+<details class="answer">
+<summary>Gabarito</summary>
+<pre><code class="language-py">         /
+        | 1                 se n &lt; 2;
+f(n) = &lt;
+        | 3f(n/2) + n       se n &gt;= 2.
+         \
+</code></pre>
+</details>
+</blockquote>
+<p>Agora que temos a recorrência, podemos construir a árvore.</p>
+<blockquote class="question">
+<p>Exercício 2</p>
+<p>Construa a árvore de complexidade do Algoritmo de Karatsuba.</p>
+<details class="answer">
+<summary>Resposta</summary>
+<figure class="img"><img src="img/karatsuba.jpg" alt=""></figure>
+</details>
+</blockquote>
+<p>Feito isso, estimaremos a altura h da árvore.</p>
+<blockquote class="question">
+<p>Exercício 3</p>
+<p>Calcule um limitante para a altura da árvore.</p>
+<details class="answer">
+<summary>Gabarito</summary>
+<pre><code class="language-py">Tamanho n divide por 2 a cada andar enquanto for maior que 2.
+No antepenúltimo andar (h-2), ainda não chegamos na base.
+n / 2^(h-2) &gt; 2
+n &gt; 2 * 2^(h-2)
+n / 2 &gt; 2^(h-2)
+n / 2 &gt; 2^h / 2^2
+n / 2 &gt; 2^h / 4
+2^h &lt; 2n
+
+2^h = O(n), ou seja, 2^h &lt;= c_x n
+
+</code></pre>
+</details>
+</blockquote>
+<p>Com a altura podemos calcular a soma de todas as “folhas”, e assim chegar à complexidade do Algoritmo de Karatsuba.</p>
+<blockquote class="question">
+<p>Exercício 4</p>
+<p>Some a parte não recursiva de cada andar.</p>
+<details class="answer">
+<summary>Gabarito</summary>
+<pre><code class="language-py">Ao longo dos andares, temos
+(n + n3/2 + n6/4 + ... + n(3/2)^(h-2)) + 3^(h-1)
+
+Soma infinita
+- primeiro elemento n
+- razão 3/2
+
+ &lt; n / (1 - 3/2) + 3^(h-1)
+ = n / (1/2) + 3^(h-1)
+ = 2n + 3^(h-1)
+ = 2n + 3^h / 3^1
+ = 2n + 3^h / 3
+ = 2n + (3^h)^(log2 3) / 2
+
+Como 2^h &lt;= c_x n
+
+&lt;= 2n + n^(log3 2) / 2
+
+Como log2 3 &gt; 1, a complexidade é O(n^(log2 3)).
+</code></pre>
+</details>
+</blockquote>
+<p>Portanto, para números muito grandes, o algoritmo de Karatsuba é mais eficiente em termos de complexidade do que a multiplicação tradicional.</p>
+
+
+            </main>
+            <footer>
+                <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">
+                    <img alt="CC BY-SA 4.0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" title="Creative Commons Attribution-ShareAlike 4.0 International License"/>
+                </a>
+                © 2022 Marcelo Hashimoto
+            </footer>
+        </div>
+    </body>
+</html>
